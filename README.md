@@ -1,3 +1,31 @@
+# Thomas plays with [p5.js][p5]
+
+This is a repo to test [p5.js][p5] and to [deploy Create-React-App][cra_deploy] to [to GitHub Pages][gh].
+
+
+## Demo
+This is deployed at [fauskanger.github.io/p5][demo]
+
+## Future work
+
+
+Perhaps more fiddles and diddles will be added in the future.
+
+
+[demo]: https://fauskanger.github.io/p5
+[p5]: https://p5js.org/
+[cra_deploy]: https://facebook.github.io/create-react-app/docs/deployment#github-pages-https-pagesgithubcom
+[gh]: https://pages.github.com/
+
+
+
+---
+
+original README.md is kept below:
+
+---
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -66,4 +94,3 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
-# p5
