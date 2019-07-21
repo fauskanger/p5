@@ -8,27 +8,31 @@ import './App.css';
 
 
 class App extends Component {
-  p5Element = null;
-  state = {
-      rotation: 45
-  };
-  render = () => {
-    return (
-        <div className="App">
-          <header className="App-header">
-              Mandelbrot Set Visualization
-           {/*Set a number ({ this.state.rotation }°): */}
-              {/*<input type={"range"} min={-360} max={360} value={this.state.rotation} onChange={(e) => this.setState({rotation: Number(e.target.value)})}/>*/}
-          </header>
-          <div ref={e => this.p5Element = e} style={{
-            display: 'flex',
-            flexGrow: 1,
-          }}>
-            <P5Wrapper sketch={mandelbrotSketch} rotation={this.state.rotation} />
-          </div>
-        </div>
-    );
-  }
+    p5Element = null;
+    state = {
+        rotation: 45
+    };
+    render = () => {
+        return (
+            <div className="App">
+                <header className="App-header">
+                    <div className="title">
+                        Mandelbrot Set Visualization
+                    </div>
+                    <div className="controls">
+                        {/*Set a number ({ this.state.rotation }°):*/}
+                        {/*<input type={"range"} min={-360} max={360} value={this.state.rotation} onChange={(e) => this.setState({rotation: Number(e.target.value)})}/>*/}
+                    </div>
+                </header>
+                <div ref={e => this.p5Element = e} style={{
+                    display: 'flex',
+                    flexGrow: 1,
+                }}>
+                    <P5Wrapper sketch={mandelbrotSketch} rotation={this.state.rotation} />
+                </div>
+            </div>
+        );
+    }
 }
 
 export default App;
