@@ -2,17 +2,20 @@ import * as M from 'mathjs';
 
 export const mandelbrotSketch = p => {
 
-    let lessThanInfinity = 100;
+    let lessThanInfinity = 16;
     let maxIterations = 200;
-    let colorOffset = 0;
-    let colorEaseExponent = 2/3;
+    let colorOffset = -20;
+    let colorEaseExponent = 0.55;
     let easedMaxIterations = M.pow(maxIterations, colorEaseExponent);
-    let sqrtMaxIterations = M.sqrt(maxIterations);
+    // let sqrtMaxIterations = M.sqrt(maxIterations);
 
 
-    let imBounds = p.createVector(-1.2, 1.2);
+    let startImBounds = p.createVector(-1.2, 1.2);
+    let startReBounds = p.createVector(-1.85, 0.6);
+    let imBounds = undefined;
     let reBounds = undefined;
     let reMidPoint = -0.5;
+    let imMidPoint = 0;
 
     let pixels = [];
 
@@ -64,9 +67,18 @@ export const mandelbrotSketch = p => {
 
     const initBounds = () => {
         // Must be called after p.createCanvas for p.height/width to have been set correctly
-        const dimRatio = p.width / p.height;
-        const reWidth = (imBounds.y - imBounds.x) * dimRatio;
-        reBounds = p.createVector(reMidPoint - reWidth / 2, reMidPoint + reWidth / 2);
+        const widthByHeight = p.width / p.height;
+        if (widthByHeight > startImBounds.mag() / startReBounds.mag()) {
+            // Compute width from height
+            imBounds = startImBounds;
+            const reWidth = (imBounds.y - imBounds.x) * widthByHeight;
+            reBounds = p.createVector(reMidPoint - reWidth / 2, reMidPoint + reWidth / 2);
+        } else {
+            // Compute height from width
+            reBounds = startReBounds;
+            const imHeight = (reBounds.y - reBounds.x) / widthByHeight;
+            imBounds = p.createVector(imMidPoint - imHeight / 2, imMidPoint + imHeight / 2);
+        }
 
         console.log('Re axis: ', reBounds.x, ' - ', reBounds.y);
         console.log('Im axis: ', imBounds.x, ' - ', imBounds.y);
@@ -82,6 +94,7 @@ export const mandelbrotSketch = p => {
         p.colorMode(p.HSB);
         initBounds();
         initPixelGrid();
+
     };
 
     p.myCustomRedrawAccordingToNewPropsHandler = function (props) {
