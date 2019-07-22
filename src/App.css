@@ -25,8 +25,26 @@
 .App-header .controls {
   /*font-size: calc(5px + 0.5vmin);*/
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(auto-fill, max-content);
   padding: 0 0.5rem;
+  align-items: center;
+}
+
+.update-button button {
+  width: 90%;
+  height: 90%;
+  font-size: 1rem;
+  border-radius: 1rem;
+  border-width: 0;
+}
+.update-button button:disabled {
+  width: 70%;
+  height: 70%;
+  font-size: 0.7rem;
+  border-radius: 0.5rem;
+  padding: 1rem 0;
+  opacity: 0.5;
 }
 
 .App-link {
@@ -35,5 +53,61 @@
 
 body {
   background-color: black;
+}
+
+.loading-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  left: 0rem;
+  top: 0rem;
+  padding: 0.5rem;
+}
+.github-logo {
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  right: 0rem;
+  top: 0rem;
+  padding: 0.5rem;
+}
+
+.github-logo:hover {
+  border-radius: 0.25rem;
+  background-color: #464646;
+}
+
+a, a:hover, a:focus, a:active {
+  text-decoration: none;
+  color: white;
+}
+
+.github-logo a {
+  display: flex;
+}
+
+.github-logo:hover .github-link-text{
+  display: block;
+}
+
+.github-link-text{
+  display: none;
+  padding-right: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.github-logo img {
+  /*padding: 0.5rem;*/
+  width: 1.25rem;
+  /*background-color: transparent;*/
+}
+
+.hide {
+  visibility: hidden;
+}
+
+.show {
+  visibility: visible;
 }
 

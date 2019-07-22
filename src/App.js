@@ -3,16 +3,120 @@ import P5Wrapper from 'react-p5-wrapper';
 
 // import { demoSketch } from './p5';
 import { mandelbrotSketch } from './p5/mandelbrot';
+import githubLogo from './images/GitHub-Mark-Light-64px.png';
+import loaderGif from './images/loader.gif';
 
 import './App.css';
+
+const repoUrl = 'https://www.github.com/fauskanger/p5';
+
+
 
 
 class App extends Component {
     p5Element = null;
     state = {
-        rotation: 45
+        sketch: {
+            reMin: -1.85,
+            reMax: 0.6,
+            imMin: -1.2,
+            imMax: 1.2,
+            maxIterations: 100,
+            colorEaseExponent: 0.8
+        },
+        tmpSketch: {},
+        loading: false
     };
+
+    applyChanges = () => {
+        this.setLoadingStart().then(() =>
+            setTimeout(() =>
+                    this.setState({
+                        sketch: {
+                            ...this.state.sketch,
+                            ...this.state.tmpSketch
+                        },
+                        tmpSketch: {}
+                    }),
+                1000)
+        );
+        this.setLoadingComplete();
+    };
+
+    createStateSlider = ({ min, max, stateAttributeName, step=0.1, validate=this.defaultControlChangeValidation }) => {
+        const value = this.state.sketch[stateAttributeName];
+        const tmpValue = this.state.tmpSketch[stateAttributeName];
+        return (
+            <input
+                type={"range"} min={min} max={max} step={step}
+                value={tmpValue || value}
+                onChange={
+                    (e) => {
+                        const oldValue = this.state.sketch[stateAttributeName];
+                        const newValue = Number(e.target.value);
+                        if (oldValue !== newValue && validate(newValue)) {
+                            console.log(stateAttributeName, 'old: ', oldValue, 'new: ', newValue);
+                            this.setState({
+                                tmpSketch: {
+                                    ...this.state.tmpSketch,
+                                    [stateAttributeName]: newValue
+                                }
+                            })
+                        }
+                    }
+                }
+            />)
+    };
+
+    defaultControlChangeValidation = (newValue) => newValue;
+
+    getControlMetas = () => [
+        {
+            stateAttributeName: 'reMin',
+            label: 'Real start',
+            min: -2, max: 2, step: 0.01,
+            // validate: (newValue) => newValue < this.state.sketch.reMax
+        },
+        {
+            stateAttributeName: 'reMax',
+            label: 'Real end',
+            min: -2, max: 2, step: 0.01,
+            validate: (newValue) => newValue > this.state.sketch.reMin
+        },
+        {
+            stateAttributeName: 'imMin',
+            label: 'Imaginary start',
+            min: -2, max: 2, step: 0.01,
+            validate: (newValue) => newValue < this.state.sketch.imMax
+        },
+        {
+            stateAttributeName: 'imMax',
+            label: 'Imaginary end',
+            min: -2, max: 2, step: 0.01,
+            validate: (newValue) => newValue > this.state.sketch.imMin
+        },
+        {
+            stateAttributeName: 'maxIterations',
+            label: 'Max iterations',
+            min: 2, max: 1000, step: 20,
+        },
+        {
+            stateAttributeName: 'colorEaseExponent',
+            label: 'Color exponent',
+            min: 0.1, max: 2, step: 0.05,
+        },
+    ];
+
+    setLoadingComplete = async () => {
+        await this.setState({ loading: false })
+    };
+    setLoadingStart = async () => {
+        await this.setState({ loading: true })
+    };
+
     render = () => {
+        const { sketch: sketchState } = this.state;
+        const isApplyButtonDisabled = this.state.loading || Object.keys(this.state.tmpSketch).length === 0;
         return (
             <div className="App">
                 <header className="App-header">
@@ -20,15 +124,50 @@ class App extends Component {
                         Mandelbrot Set Visualization
                     </div>
                     <div className="controls">
-                        {/*Set a number ({ this.state.rotation }°):*/}
-                        {/*<input type={"range"} min={-360} max={360} value={this.state.rotation} onChange={(e) => this.setState({rotation: Number(e.target.value)})}/>*/}
+                        {
+                            this.getControlMetas().map( item => {
+                                    const value = this.state.sketch[item.stateAttributeName];
+                                    const tmpValue = this.state.tmpSketch[item.stateAttributeName];
+                                    return <div key={item.stateAttributeName}>
+                                        <div>
+                                            {item.label}
+                                        </div>
+                                        <div>
+                                            ({ !!tmpValue ? `${value} ⟶ ${tmpValue}`: value })
+                                        </div>
+                                        <div>
+                                            {this.createStateSlider(item)}
+                                        </div>
+                                    </div>
+                                }
+                            )
+                        }
+                        <div className="update-button">
+                            <button onClick={this.applyChanges} disabled={isApplyButtonDisabled}>
+                                Apply changes
+                            </button>
+                        </div>
+                    </div>
+                    <div className="github-logo">
+                        <a href={repoUrl} target="_blank" rel="noopener noreferrer">
+                            <span className="github-link-text">See code</span>
+                            <img src={githubLogo} alt="Visit repo on GitHub" />
+                        </a>
+                    </div>
+                    <div className={`loading-icon ${this.state.loading? 'show': 'hide'}`}>
+                        <img src={loaderGif} alt="Loading" />
                     </div>
                 </header>
                 <div ref={e => this.p5Element = e} style={{
                     display: 'flex',
                     flexGrow: 1,
                 }}>
-                    <P5Wrapper sketch={mandelbrotSketch} rotation={this.state.rotation} />
+                    <P5Wrapper
+                        sketch={mandelbrotSketch}
+                        { ...sketchState }
+                        setLoadingStart={this.setLoadingStart}
+                        setLoadingComplete={this.setLoadingComplete}
+                    />
                 </div>
             </div>
         );
