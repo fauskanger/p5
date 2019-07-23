@@ -11,20 +11,21 @@ import './App.css';
 const repoUrl = 'https://www.github.com/fauskanger/p5';
 
 
+const startParams = {
+    reMin: -1.85,
+    reMax: 0.6,
+    imMin: -1.2,
+    imMax: 1.2,
+    maxIterations: 50,
+    colorEaseExponent: 1.0
+};
 
 
 class App extends Component {
     p5Element = null;
     // headerSection = null;
     state = {
-        sketch: {
-            reMin: -1.85,
-            reMax: 0.6,
-            imMin: -1.2,
-            imMax: 1.2,
-            maxIterations: 50,
-            colorEaseExponent: 1.0
-        },
+        sketch: startParams,
         tmpSketch: {},
         loading: false,
         headerHeight: 0
@@ -86,13 +87,13 @@ class App extends Component {
             stateAttributeName: stateAttributeNameStart,
             label: startLabel,
             min, max, step,
-            validate: (newValue) => newValue < this.getTmpOrExistingSketchState(stateAttributeNameStart)
+            validate: (newValue) => newValue < this.getTmpOrExistingSketchState(stateAttributeNameEnd)
         },
         {
             stateAttributeName: stateAttributeNameEnd,
             label: endLabel,
             min, max, step,
-            validate: (newValue) => newValue > this.getTmpOrExistingSketchState(stateAttributeNameEnd)
+            validate: (newValue) => newValue > this.getTmpOrExistingSketchState(stateAttributeNameStart)
         },
     ];
 
