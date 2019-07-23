@@ -22,7 +22,7 @@ class App extends Component {
             reMax: 0.6,
             imMin: -1.2,
             imMax: 1.2,
-            maxIterations: 100,
+            maxIterations: 50,
             colorEaseExponent: 1.0
         },
         tmpSketch: {},
@@ -153,7 +153,7 @@ class App extends Component {
         {
             stateAttributeName: 'maxIterations',
             label: 'Max iterations',
-            min: 5, max: 1000, step: 10,
+            min: 10, max: 1000, step: 10,
         },
         {
             stateAttributeName: 'colorEaseExponent',
@@ -213,10 +213,7 @@ class App extends Component {
                         <img src={loaderGif} alt="Loading" />
                     </div>
                 </header>
-                <div ref={e => this.p5Element = e} style={{
-                    display: 'flex',
-                    flexGrow: 1,
-                }}>
+                <div ref={e => this.p5Element = e} className="sketch_wrapper">
                     <P5Wrapper
                         sketch={mandelbrotSketch}
                         { ...sketchState }

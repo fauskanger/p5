@@ -57,7 +57,7 @@
 }
 
 body {
-  background-color: black;
+  background-color: #282c34;
 }
 
 .loading-icon {
@@ -114,6 +114,18 @@ a, a:hover, a:focus, a:active {
 
 .show {
   visibility: visible;
+}
+
+.sketch_wrapper {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-content: center;
+}
+
+
+.sketch_wrapper > * {
+  border: 1px solid black;
 }
 
 

@@ -125,7 +125,7 @@ export const mandelbrotSketch = p => {
 
     p.setup = function () {
         // p.createCanvas(500, 500, p.P2D);
-        p.createCanvas(window.innerWidth, window.innerHeight-headerHeight, p.P2D);
+        p.createCanvas(window.innerWidth-30, window.innerHeight-headerHeight-15, p.P2D);
         // p.frameRate(0.1);
         p.noLoop();
         p.angleMode(p.DEGREES);
