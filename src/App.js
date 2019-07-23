@@ -15,6 +15,7 @@ const repoUrl = 'https://www.github.com/fauskanger/p5';
 
 class App extends Component {
     p5Element = null;
+    // headerSection = null;
     state = {
         sketch: {
             reMin: -1.85,
@@ -22,23 +23,35 @@ class App extends Component {
             imMin: -1.2,
             imMax: 1.2,
             maxIterations: 100,
-            colorEaseExponent: 0.8
+            colorEaseExponent: 1.0
         },
         tmpSketch: {},
-        loading: false
+        loading: false,
+        headerHeight: 0
     };
 
+    getTmpOrExistingSketchState = stateAttributeName => typeof this.state.tmpSketch[stateAttributeName] === "undefined"
+        ? this.state.sketch[stateAttributeName]
+        : this.state.tmpSketch[stateAttributeName];
+
+    componentDidMount() {
+        this.setState({
+            headerHeight: this.headerSection.clientHeight
+        })
+    }
+
     applyChanges = () => {
-        this.setLoadingStart().then(() =>
-            setTimeout(() =>
-                    this.setState({
-                        sketch: {
-                            ...this.state.sketch,
-                            ...this.state.tmpSketch
-                        },
-                        tmpSketch: {}
-                    }),
-                1000)
+        this.setLoadingStart();
+        setTimeout(
+            () =>
+                this.setState({
+                    sketch: {
+                        ...this.state.sketch,
+                        ...this.state.tmpSketch
+                    },
+                    tmpSketch: {}
+                }),
+            1000
         );
         this.setLoadingComplete();
     };
@@ -68,37 +81,79 @@ class App extends Component {
             />)
     };
 
-    defaultControlChangeValidation = (newValue) => newValue;
+    createSliderPair = ({ stateAttributeNameStart, stateAttributeNameEnd, startLabel, endLabel, min, max, step }) => [
+        {
+            stateAttributeName: stateAttributeNameStart,
+            label: startLabel,
+            min, max, step,
+            validate: (newValue) => newValue < this.getTmpOrExistingSketchState(stateAttributeNameStart)
+        },
+        {
+            stateAttributeName: stateAttributeNameEnd,
+            label: endLabel,
+            min, max, step,
+            validate: (newValue) => newValue > this.getTmpOrExistingSketchState(stateAttributeNameEnd)
+        },
+    ];
+
+    defaultControlChangeValidation = (newValue) => true;
+
+    // getControlMetas = () => [
+    //     {
+    //         stateAttributeName: 'reMin',
+    //         label: 'Real start',
+    //         min: -2, max: 2, step: 0.01,
+    //         validate: (newValue) => newValue < this.getTmpOrExistingSketchState('reMin')
+    //     },
+    //     {
+    //         stateAttributeName: 'reMax',
+    //         label: 'Real end',
+    //         min: -2, max: 2, step: 0.01,
+    //         validate: (newValue) => newValue > this.getTmpOrExistingSketchState('reMax')
+    //     },
+    //     {
+    //         stateAttributeName: 'imMin',
+    //         label: 'Imaginary start',
+    //         min: -2, max: 2, step: 0.01,
+    //         validate: (newValue) => newValue < this.getTmpOrExistingSketchState('imMax')
+    //     },
+    //     {
+    //         stateAttributeName: 'imMax',
+    //         label: 'Imaginary end',
+    //         min: -2, max: 2, step: 0.01,
+    //         validate: (newValue) => newValue > this.getTmpOrExistingSketchState('imMax')
+    //     },
+    //     {
+    //         stateAttributeName: 'maxIterations',
+    //         label: 'Max iterations',
+    //         min: 5, max: 1000, step: 10,
+    //     },
+    //     {
+    //         stateAttributeName: 'colorEaseExponent',
+    //         label: 'Color exponent',
+    //         min: 0.1, max: 2, step: 0.05,
+    //     },
+    // ];
 
     getControlMetas = () => [
-        {
-            stateAttributeName: 'reMin',
-            label: 'Real start',
+        ...this.createSliderPair({
+            stateAttributeNameStart: 'reMin',
+            stateAttributeNameEnd: 'reMax',
             min: -2, max: 2, step: 0.01,
-            // validate: (newValue) => newValue < this.state.sketch.reMax
-        },
-        {
-            stateAttributeName: 'reMax',
-            label: 'Real end',
+            startLabel: 'Real start',
+            endLabel: 'Real end'
+        }),
+        ...this.createSliderPair({
+            stateAttributeNameStart: 'imMin',
+            stateAttributeNameEnd: 'imMax',
             min: -2, max: 2, step: 0.01,
-            validate: (newValue) => newValue > this.state.sketch.reMin
-        },
-        {
-            stateAttributeName: 'imMin',
-            label: 'Imaginary start',
-            min: -2, max: 2, step: 0.01,
-            validate: (newValue) => newValue < this.state.sketch.imMax
-        },
-        {
-            stateAttributeName: 'imMax',
-            label: 'Imaginary end',
-            min: -2, max: 2, step: 0.01,
-            validate: (newValue) => newValue > this.state.sketch.imMin
-        },
+            startLabel: 'Imaginary start',
+            endLabel: 'Imaginary end'
+        }),
         {
             stateAttributeName: 'maxIterations',
             label: 'Max iterations',
-            min: 2, max: 1000, step: 20,
+            min: 5, max: 1000, step: 10,
         },
         {
             stateAttributeName: 'colorEaseExponent',
@@ -107,11 +162,11 @@ class App extends Component {
         },
     ];
 
-    setLoadingComplete = async () => {
-        await this.setState({ loading: false })
+    setLoadingComplete = () => {
+        this.setState({ loading: false })
     };
-    setLoadingStart = async () => {
-        await this.setState({ loading: true })
+    setLoadingStart = () => {
+        this.setState({ loading: true })
     };
 
     render = () => {
@@ -119,7 +174,7 @@ class App extends Component {
         const isApplyButtonDisabled = this.state.loading || Object.keys(this.state.tmpSketch).length === 0;
         return (
             <div className="App">
-                <header className="App-header">
+                <header className="App-header" ref={(e => this.headerSection = e)}>
                     <div className="title">
                         Mandelbrot Set Visualization
                     </div>
@@ -167,6 +222,7 @@ class App extends Component {
                         { ...sketchState }
                         setLoadingStart={this.setLoadingStart}
                         setLoadingComplete={this.setLoadingComplete}
+                        headerHeight={this.state.headerHeight}
                     />
                 </div>
             </div>

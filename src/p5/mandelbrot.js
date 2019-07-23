@@ -5,9 +5,11 @@ let hideLoading = () => undefined;
 
 export const mandelbrotSketch = p => {
 
-    let lessThanInfinity = 16;
+    let headerHeight = 0;
+
+    let lessThanInfinity = 4;
     let maxIterations = 50;
-    let colorOffset = -20;
+    // let colorOffset = 0;
     let colorEaseExponent = 0.55;
 
 
@@ -63,6 +65,7 @@ export const mandelbrotSketch = p => {
         for (let i = 0; i < maxIterations; i++) {
             z = z.pow(2).add(c);
             if (M.square(z.re) + M.square(z.im) > lessThanInfinity) {
+            // if (z.re > 2 || z.im > 2) {
                 return i;
             }
         }
@@ -121,7 +124,8 @@ export const mandelbrotSketch = p => {
     };
 
     p.setup = function () {
-        p.createCanvas(window.innerWidth, window.innerHeight-100, p.P2D);
+        // p.createCanvas(500, 500, p.P2D);
+        p.createCanvas(window.innerWidth, window.innerHeight-headerHeight, p.P2D);
         // p.frameRate(0.1);
         p.noLoop();
         p.angleMode(p.DEGREES);
@@ -142,9 +146,11 @@ export const mandelbrotSketch = p => {
             maxIterations: maxIterProp,
             colorEaseExponent: colorEaseProp,
             setLoadingStart,
-            setLoadingComplete
+            setLoadingComplete,
+            headerHeight: headerHeightProp=0
         } = props;
         let anyChanges = false;
+        headerHeight = headerHeightProp;
         showLoading = setLoadingStart;
         hideLoading = setLoadingComplete;
         if (startReBounds.x !== reMin || startReBounds.y !== reMax) {
@@ -171,14 +177,17 @@ export const mandelbrotSketch = p => {
     };
 
     p.draw = function () {
-        p.background(0);
+        p.background(12);
 
         if (initialized) {
-            for (const {col, row, color} of allPixelsCoordsGenerator()) {
-                const offsetColor = (color + colorOffset) % 255;
-                p.stroke(offsetColor, p.map(color, 0, 255, 100, 200), 255 - color);
+            for (const {col, row, color, nIterations} of allPixelsCoordsGenerator()) {
+                // const offsetColor = (255 + color + colorOffset) % 255;
+                p.stroke(color, 200, nIterations === maxIterations? 0: 255);
                 p.point(col, row);
             }
+        } else {
+            p.fill(255);
+            p.text('Loading...', p.width / 2, p.height / 2);
         }
     };
 };

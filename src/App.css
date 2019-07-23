@@ -6,7 +6,7 @@
 .App-header {
   /*width: 100%;*/
   background-color: #282c34;
-  height: 100px;
+  height: 150px;
   color: white;
   display: grid;
   grid-template-rows: 1fr max-content;
@@ -25,10 +25,14 @@
 .App-header .controls {
   /*font-size: calc(5px + 0.5vmin);*/
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(auto-fill, max-content);
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr 1fr;
   padding: 0 0.5rem;
   align-items: center;
+}
+
+.update-button {
+  grid-column: 4;
 }
 
 .update-button button {
@@ -37,6 +41,7 @@
   font-size: 1rem;
   border-radius: 1rem;
   border-width: 0;
+  grid-column: 500;
 }
 .update-button button:disabled {
   width: 70%;
@@ -109,5 +114,21 @@ a, a:hover, a:focus, a:active {
 
 .show {
   visibility: visible;
+}
+
+
+@media screen and (min-width: 63.5rem) {
+  .App-header {
+    height: 100px;
+  }
+
+  .update-button {
+    grid-column: 7;
+  }
+
+  .App-header .controls {
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: 1fr;
+  }
 }
 
