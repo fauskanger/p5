@@ -1,4 +1,5 @@
 import * as M from 'mathjs';
+import {to2dec} from "../util";
 
 let showLoading = () => undefined;
 let hideLoading = () => undefined;
@@ -6,6 +7,7 @@ let hideLoading = () => undefined;
 export const mandelbrotSketch = p => {
 
     let headerHeight = 0;
+    let footerHeight = 0;
 
     let lessThanInfinity = 4;
     let maxIterations = 50;
@@ -65,7 +67,7 @@ export const mandelbrotSketch = p => {
         for (let i = 0; i < maxIterations; i++) {
             z = z.pow(2).add(c);
             if (M.square(z.re) + M.square(z.im) > lessThanInfinity) {
-            // if (z.re > 2 || z.im > 2) {
+                // if (z.re > 2 || z.im > 2) {
                 return i;
             }
         }
@@ -125,16 +127,19 @@ export const mandelbrotSketch = p => {
 
     p.setup = function () {
         // p.createCanvas(500, 500, p.P2D);
-        p.createCanvas(window.innerWidth-30, window.innerHeight-headerHeight-15, p.P2D);
+        p.createCanvas(window.innerWidth-20, window.innerHeight-headerHeight-footerHeight-30, p.P2D);
         // p.frameRate(0.1);
-        p.noLoop();
         p.angleMode(p.DEGREES);
         p.background(0);
         p.rectMode(p.CENTER);
+        // p.textAlign(p.CENTER);
         p.colorMode(p.HSB);
+        // p.fill(255, 0, 255);
+        // p.text('Loading setup...', p.width / 2, p.height / 2);
+        computeBounds();
         setupComplete = true;
         // Do the stuff
-        recomputeValues();
+        // recomputeValues();
     };
 
     p.myCustomRedrawAccordingToNewPropsHandler = function (props) {
@@ -147,10 +152,12 @@ export const mandelbrotSketch = p => {
             colorEaseExponent: colorEaseProp,
             setLoadingStart,
             setLoadingComplete,
-            headerHeight: headerHeightProp=0
+            headerHeight: headerHeightProp=0,
+            footerHeight: footerHeightProp=0
         } = props;
         let anyChanges = false;
         headerHeight = headerHeightProp;
+        footerHeight = footerHeightProp;
         showLoading = setLoadingStart;
         hideLoading = setLoadingComplete;
         if (startReBounds.x !== reMin || startReBounds.y !== reMax) {
@@ -178,16 +185,25 @@ export const mandelbrotSketch = p => {
 
     p.draw = function () {
         p.background(12);
-
         if (initialized) {
             for (const {col, row, color, nIterations} of allPixelsCoordsGenerator()) {
                 // const offsetColor = (255 + color + colorOffset) % 255;
                 p.stroke(color, 200, nIterations === maxIterations? 0: 255);
                 p.point(col, row);
             }
-        } else {
-            p.fill(255);
-            p.text('Loading...', p.width / 2, p.height / 2);
+        } else if (p.frameCount > 1) {
+            // Do the stuff
+            recomputeValues();
+            p.noLoop();
+        } else  {
+            p.fill(255, 0, 255);
+            p.text('Loading...', p.width / 2, p.height / 2 - 200);
+            p.text('Re axis: ', 10, 30);
+            p.text(to2dec(reBounds.x) + ' ,  ' + to2dec(reBounds.y), 80, 30);
+            p.text('Im axis: ', 10, 50);
+            p.text(to2dec(imBounds.x) + ' ,  ' + to2dec(imBounds.y), 80, 50);
+            p.text('Pixels: ', 10, 70);
+            p.text(p.width + 'x' + p.height, 80, 70);
         }
     };
 };

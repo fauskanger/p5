@@ -1,12 +1,39 @@
 .App {
   text-align: center;
+  display: grid;
+  grid-template-rows: max-content auto max-content;
   /*width: 100%;*/
+  height: 100%;
+  max-height: 100%;
 }
 
 .App-header {
   /*width: 100%;*/
-  background-color: #282c34;
-  height: 150px;
+  /*background-color: #282c34;*/
+  /*height: 150px;*/
+  height: auto;
+  /*padding: 0.5rem;*/
+  color: white;
+  /*display: grid;*/
+  /*grid-template-rows: 1fr max-content;*/
+  /*align-items: center;*/
+  /*justify-content: space-between;*/
+  /*justify-items: center;*/
+  /*display: flex;*/
+  /*flex-direction: row;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+  margin: 0.5rem 0;
+}
+
+.App-header .title {
+  font-size: calc(10px + 2vmin);
+}
+
+footer {
+  /*width: 100%;*/
+  /*height: 150px;*/
+  height: auto;
   color: white;
   display: grid;
   grid-template-rows: 1fr max-content;
@@ -17,39 +44,63 @@
   /*flex-direction: row;*/
   /*align-items: center;*/
   /*justify-content: center;*/
+  margin-bottom: 0.5rem;
 }
 
-.App-header .title {
-  font-size: calc(10px + 2vmin);
-}
-.App-header .controls {
-  /*font-size: calc(5px + 0.5vmin);*/
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 1fr 1fr;
-  padding: 0 0.5rem;
+footer .controls {
+  font-size: calc(8px + 1.1vmin);
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  /*display: grid;*/
+  /*grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr) );*/
+  /*grid-template-rows: auto;*/
   align-items: center;
+  margin: 0.5rem 0;
+}
+
+.footer .controls > div input {
+  width: 90%;
+}
+
+
+.small-button-section {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  margin: 0 1rem;
 }
 
 .update-button {
-  grid-column: 4;
+  /*grid-column: 1;*/
+  margin: 0 1rem;
 }
 
 .update-button button {
-  width: 90%;
-  height: 90%;
-  font-size: 1rem;
+  /*width: 90%;*/
+  /*height: 1.5rem;*/
+  padding-left: 0.5rem;
+  font-size: 0.7rem;
   border-radius: 1rem;
   border-width: 0;
-  grid-column: 500;
+  /*grid-column: 3;*/
+  /*display: inline-flex;*/
+  /*align-items: center;*/
 }
 .update-button button:disabled {
-  width: 70%;
-  height: 70%;
-  font-size: 0.7rem;
+  /*width: 70%;*/
+  /*height: 70%;*/
+  font-size: 0.5rem;
   border-radius: 0.5rem;
-  padding: 1rem 0;
+  /*padding: 1rem 0;*/
   opacity: 0.5;
+}
+
+.loading-icon {
+  margin: 0 1rem;
 }
 
 .App-link {
@@ -58,15 +109,6 @@
 
 body {
   background-color: #282c34;
-}
-
-.loading-icon {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  left: 0rem;
-  top: 0rem;
-  padding: 0.5rem;
 }
 .github-logo {
   cursor: pointer;
@@ -129,18 +171,23 @@ a, a:hover, a:focus, a:active {
 }
 
 
-@media screen and (min-width: 63.5rem) {
-  .App-header {
-    height: 100px;
-  }
+@media (min-width: 63.5rem) {
 
-  .update-button {
-    grid-column: 7;
-  }
-
-  .App-header .controls {
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: 1fr;
-  }
 }
+
+
+/*@media screen and (min-width: 63.5rem) {*/
+/*  .App-header {*/
+/*    height: 100px;*/
+/*  }*/
+
+/*  .update-button {*/
+/*    grid-column: 7;*/
+/*  }*/
+
+/*  .App-header .controls {*/
+/*    grid-template-columns: repeat(7, 1fr);*/
+/*    grid-template-rows: 1fr;*/
+/*  }*/
+/*}*/
 
