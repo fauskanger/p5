@@ -4,16 +4,13 @@ import { Helmet } from 'react-helmet';
 // import * as M from 'mathjs';
 
 // import { demoSketch } from './p5';
-import { mandelbrotSketch } from './p5/mandelbrot';
-import githubLogo from './images/GitHub-Mark-Light-64px.png';
-import loaderGif from './images/loader.gif';
-import ogImage from './images/thumbnailMandelbrot.png';
+import { mandelbrotSketch } from '../../p5/mandelbrot';
+import ogImage from '../../images/thumbnailMandelbrot.png';
 
-import './App.css';
-import { toNdec } from "./util";
+import HeaderComponent from "../header";
+import FooterComponent from "../footer";
 
-const repoUrl = 'https://www.github.com/fauskanger/p5';
-
+const pageTitle = 'Mandelbrot Set Visualization';
 
 const startSketchState = {
     reMin: -1.85,
@@ -26,7 +23,7 @@ const startSketchState = {
 };
 
 
-class App extends Component {
+class MandelbrotPageComponent extends Component {
     p5Element = null;
     // headerSection = null;
     // footerSection = null;
@@ -199,17 +196,9 @@ class App extends Component {
                 <Helmet>
                     <meta property="og:image" content={ogImage} />
                 </Helmet>
-                <header className="App-header" ref={(e => this.headerSection = e)}>
-                    <div className="title">
-                        Mandelbrot Set Visualization
-                    </div>
-                    <div className="github-logo">
-                        <a href={repoUrl} target="_blank" rel="noopener noreferrer">
-                            <span className="github-link-text">See code</span>
-                            <img src={githubLogo} alt="Visit repo on GitHub" />
-                        </a>
-                    </div>
-                </header>
+
+                <HeaderComponent title={pageTitle} />
+
                 <main ref={e => this.p5Element = e} className="sketch_wrapper">
                     <P5Wrapper
                         sketch={mandelbrotSketch}
@@ -220,55 +209,21 @@ class App extends Component {
                         footerHeight={this.state.footerHeight}
                     />
                 </main>
-                <footer ref={(e => this.footerSection = e)}>
-                    <div className="controls">
-                        {/*<div className="update-button">*/}
-                        {/*    <button onClick={this.applyChanges} disabled={isApplyButtonDisabled}>*/}
-                        {/*        Apply changes*/}
-                        {/*    </button>*/}
-                        {/*</div>*/}
-                        {
-                            this.getControlMetas().map( item => {
-                                    const value = toNdec(this.state.sketch[item.stateAttributeName], item.displayPrecision);
-                                    const tmpValue = toNdec(this.state.tmpSketch[item.stateAttributeName], item.displayPrecision);
-                                    const valueString = !!tmpValue ? `${value} ⟶ ${tmpValue}`: value;
-                                    return <div key={item.stateAttributeName}>
-                                        <div>
-                                            {item.label}
-                                        </div>
-                                        <div>
-                                            ({ valueString })
-                                        </div>
-                                        <div>
-                                            {this.createStateSlider(item)}
-                                        </div>
-                                    </div>
-                                }
-                            )
-                        }
-                    </div>
-                    <div className="small-button-section">
-                        <div className={`loading-icon ${this.state.loading? 'show': 'hide'}`}>
-                            <img src={loaderGif} alt="Loading" />
-                        </div>
-                        {
-                            !this.state.loading &&
-                            <div className="update-button">
-                                <button onClick={this.applyChanges} disabled={isApplyButtonDisabled}>
-                                    Apply changes
-                                </button>
-                            </div>
-                        }
-                        <div className="update-button">
-                            <button onClick={() => this.setState({ tmpSketch: {}, sketch: startSketchState})}>
-                                Reset
-                            </button>
-                        </div>
-                    </div>
-                </footer>
+
+                <FooterComponent
+                    controlItems={this.getControlMetas()}
+                    applyChangesFunction={this.applyChanges}
+                    footerRef={(e => this.footerSection = e)}
+                    isApplyButtonDisabled={isApplyButtonDisabled}
+                    isLoading={this.state.loading}
+                    resetFunction={() => this.setState({ tmpSketch: {}, sketch: startSketchState})}
+                    showReset={true}
+                    showUpdate={true}
+                />
+
             </div>
         );
     }
 }
 
-export default App;
+export default MandelbrotPageComponent;
